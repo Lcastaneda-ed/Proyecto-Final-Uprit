@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Función Lineal y = ax + b</title>
+
+<style>
+    body{
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: linear-gradient(135deg, #e3f2fd, #f4f6f8);
+        padding: 20px;
+    }
+
+    h1, h2{
+        text-align:center;
+        color:#1a237e;
+    }
+
+    .contenedor{
+        max-width:900px;
+        margin:auto;
+        background:#ffffff;
+        padding:25px;
+        border-radius:15px;
+        box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    p{
+        line-height:1.6;
+        font-size:16px;
+        color:#333;
+    }
+
+    .inputs{
+        text-align:center;
+        margin:25px 0;
+        padding:15px;
+        background:#f1f5ff;
+        border-radius:10px;
+    }
+
+    label{
+        font-weight:bold;
+        margin-right:5px;
+    }
+
+    input, select{
+        width:90px;
+        padding:8px;
+        margin:5px;
+        font-size:16px;
+        border-radius:6px;
+        border:1px solid #bbb;
+        text-align:center;
+    }
+
+    button{
+        padding:10px 18px;
+        font-size:16px;
+        background:#3949ab;
+        color:white;
+        border:none;
+        border-radius:8px;
+        cursor:pointer;
+        margin:5px;
+        transition:0.3s;
+    }
+
+    button:hover{
+        background:#1a237e;
+        transform:scale(1.05);
+    }
+
+    canvas{
+        display:block;
+        margin:25px auto;
+        border:2px solid #3949ab;
+        border-radius:10px;
+        background:white;
+    }
+
+    hr{
+        margin:30px 0;
+        border:none;
+        border-top:2px dashed #ccc;
+    }
+
+    .ejercicio{
+        background:#fafafa;
+        padding:15px;
+        margin:15px 0;
+        border-radius:10px;
+        border-left:5px solid #3949ab;
+    }
+
+    .resultado{
+        font-weight:bold;
+        margin-top:10px;
+        font-size:16px;
+    }
+
+    .ok{ color:green; }
+    .error{ color:red; }
+</style>
+</head>
+
+<body>
+
+<h1>📈 Función Lineal: y = ax + b</h1>
+
+<div class="contenedor">
+
+<p>
+En la función <strong>y = ax + b</strong>:
+<br>• <strong>a</strong> es la pendiente  
+<br>• <strong>b</strong> es la intersección con el eje Y
+</p>
+
+<div class="inputs">
+    <label>a =</label>
+    <input type="number" id="a">
+    <label>b =</label>
+    <input type="number" id="b">
+    <br><br>
+    <button onclick="graficar()">📊 Graficar</button>
+    <button onclick="limpiar()">🧹 Limpiar</button>
+</div>
+
+<canvas id="grafico" width="500" height="500"></canvas>
+
+<hr>
+
+<h2>📝 Ejercicios</h2>
+
+<div class="ejercicio">
+    <p><strong>1)</strong> ¿Cuál es el valor de <strong>y</strong> cuando <strong>x = 2</strong>?</p>
+    y = <input type="number" id="resp1">
+    <br>
+    <button onclick="verificar1()">Verificar</button>
+    <div id="res1" class="resultado"></div>
+</div>
+
+<div class="ejercicio">
+    <p><strong>2)</strong> ¿Cuál es el valor de <strong>b</strong>?</p>
+    b = <input type="number" id="resp2">
+    <br>
+    <button onclick="verificar2()">Verificar</button>
+    <div id="res2" class="resultado"></div>
+</div>
+
+<div class="ejercicio">
+    <p><strong>3)</strong> La recta es:</p>
+    <select id="resp3">
+        <option value="">Seleccione</option>
+        <option value="creciente">Creciente</option>
+        <option value="decreciente">Decreciente</option>
+        <option value="horizontal">Horizontal</option>
+    </select>
+    <br><br>
+    <button onclick="verificar3()">Verificar</button>
+    <div id="res3" class="resultado"></div>
+</div>
+
+</div>
+
+<script>
+function graficar(){
+    const a = parseFloat(document.getElementById("a").value);
+    const b = parseFloat(document.getElementById("b").value);
+
+    if(isNaN(a) || isNaN(b)){
+        alert("Ingrese valores para a y b");
+        return;
+    }
+
+    const canvas = document.getElementById("grafico");
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // Ejes
+    ctx.strokeStyle = "#000";
+    ctx.beginPath();
+    ctx.moveTo(250,0);
+    ctx.lineTo(250,500);
+    ctx.moveTo(0,250);
+    ctx.lineTo(500,250);
+    ctx.stroke();
+
+    const escala = 25;
+    ctx.strokeStyle = "red";
+    ctx.beginPath();
+
+    let x = -10;
+    let y = a * x + b;
+    ctx.moveTo(250 + x * escala, 250 - y * escala);
+
+    for(x = -10; x <= 10; x++){
+        y = a * x + b;
+        ctx.lineTo(250 + x * escala, 250 - y * escala);
+    }
+    ctx.stroke();
+}
+
+function limpiar(){
+    ["a","b","resp1","resp2"].forEach(id => document.getElementById(id).value="");
+    document.getElementById("resp3").value="";
+    ["res1","res2","res3"].forEach(id => document.getElementById(id).innerHTML="");
+
+    const ctx = document.getElementById("grafico").getContext("2d");
+    ctx.clearRect(0,0,500,500);
+}
+
+function verificar1(){
+    const a = parseFloat(document.getElementById("a").value);
+    const b = parseFloat(document.getElementById("b").value);
+    const resp = parseFloat(document.getElementById("resp1").value);
+    const correcta = a * 2 + b;
+
+    document.getElementById("res1").innerHTML =
+        resp === correcta
+        ? "<span class='ok'>✔ Correcto</span>"
+        : "<span class='error'>✘ Incorrecto. Respuesta correcta: " + correcta + "</span>";
+}
+
+function verificar2(){
+    const b = parseFloat(document.getElementById("b").value);
+    const resp = parseFloat(document.getElementById("resp2").value);
+
+    document.getElementById("res2").innerHTML =
+        resp === b
+        ? "<span class='ok'>✔ Correcto</span>"
+        : "<span class='error'>✘ Incorrecto. b = " + b + "</span>";
+}
+
+function verificar3(){
+    const a = parseFloat(document.getElementById("a").value);
+    const resp = document.getElementById("resp3").value;
+    let correcta = a > 0 ? "creciente" : a < 0 ? "decreciente" : "horizontal";
+
+    document.getElementById("res3").innerHTML =
+        resp === correcta
+        ? "<span class='ok'>✔ Correcto</span>"
+        : "<span class='error'>✘ Incorrecto. La recta es " + correcta + "</span>";
+}
+</script>
+
+</body>
+</html>
